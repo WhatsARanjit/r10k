@@ -67,7 +67,12 @@ class r10k::install (
 
       # Puppet Enterprise 3.8 and ships an embedded r10k so thats all thats supported
       # This conditional should not effect FOSS customers based on the fact 
-      unless $is_pe_server and versioncmp($::puppetversion, '3.8.0') >= 0 {
+      unless $is_pe_server and
+      (
+        versioncmp($::puppetversion, '3.8.0') >= 0
+        or
+        versioncmp($::pe_server_version, '4.0.0') >= 0
+      ) {
         package { $real_package_name:
           ensure          => $version,
           provider        => $provider,
