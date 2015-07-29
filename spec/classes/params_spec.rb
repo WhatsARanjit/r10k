@@ -28,4 +28,19 @@ describe 'r10k::params' , :type => 'class' do
       expect(subject.resources.size).to eq(4) 
     end
   end
+  context "Puppet Enterprise >= 4 on a RedHat 5 OS" do
+    let :facts do
+      {
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '5',
+        :operatingsystem        => 'Centos',
+        :pe_server_version      => '4.0.0',
+      }
+    end
+    it { should contain_r10k__params }
+
+    it "Should not contain any resources" do
+      expect(subject.resources.size).to eq(4) 
+    end
+  end
 end

@@ -208,8 +208,12 @@ describe 'r10k::install' , :type => 'class' do
         :operatingsystemrelease => '5',
         :operatingsystem        => 'Centos',
         :is_pe                  => true,
-        :pe_version             => '3.8.1'
+        :pe_version             => '3.8.1',
+        :puppetversion          => '3.8.1',
       }
+    end
+    let :pre_condition do
+      'include r10k::params'
     end
     it { should_not contain_package("r10k").with(
         :ensure     => '1.1.0',
@@ -378,5 +382,41 @@ describe 'r10k::install' , :type => 'class' do
     end
     it { should_not contain_class("git") }
     it { should contain_package("ruby21-r10k")}
+  end
+  context "Puppet Enterprise 4.x on a RedHat 5" do
+    let :params do
+      {
+        :manage_ruby_dependency => 'declare',
+        :install_options        => '',
+        :package_name           => 'r10k',
+        :provider               => 'pe_gem',
+        :version                => '1.1.0',
+        :keywords               => '',
+      }
+    end
+    let :facts do
+      {
+        :osfamily               => 'RedHat',
+        :operatingsystemrelease => '5',
+        :operatingsystem        => 'Centos',
+        :pe_server_version      => '4.0.0'
+      }
+    end
+    let :pre_condition do
+      'include r10k::params'
+    end
+    it { should_not contain_package("r10k").with(
+        :ensure     => '1.1.0',
+        :provider   => 'pe_gem'
+      )
+    }
+
+    it { should_not contain_file("/usr/bin/r10k").with(
+        'ensure'  => 'link',
+        'target'  => '/opt/puppet/bin/r10k',
+        'require' => 'Package[r10k]'
+      )
+    }
+
   end
 end
