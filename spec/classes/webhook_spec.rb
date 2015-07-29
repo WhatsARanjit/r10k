@@ -7,8 +7,12 @@ describe 'r10k::webhook' , :type => 'class' do
         :operatingsystemrelease => '5',
         :operatingsystem        => 'Centos',
         :is_pe                  => 'true',
-        :pe_version             => '3.7.0'
+        :pe_version             => '3.7.0',
+        :puppetversion          => '3.7.0',
       }
+    end
+    let :pre_condition do
+      'include r10k::params'
     end
     it { should contain_package('sinatra').with(
         'ensure'   => 'installed',
